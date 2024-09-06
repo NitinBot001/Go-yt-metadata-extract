@@ -5,15 +5,16 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/lithdew/youtube"
 )
 
 type VideoResponse struct {
-	Title         string `json:"title"`
-	VideoURL      string `json:"video_url"`
-	AudioURL      string `json:"audio_url"`
-	ThumbnailURL  string `json:"thumbnail_url"`
+	Title        string `json:"title"`
+	VideoURL     string `json:"video_url"`
+	AudioURL     string `json:"audio_url"`
+	ThumbnailURL string `json:"thumbnail_url"`
 }
 
 func getVideoInfo(w http.ResponseWriter, r *http.Request) {
@@ -55,7 +56,11 @@ func getVideoInfo(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080" // Default port if not set
+	}
 	http.HandleFunc("/video", getVideoInfo)
-	fmt.Println("Server running on :8080")
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	fmt.Println("Server running on port " + port)
+	log.Fatal(http.ListenAndServe(":"+port, nil))
 }
